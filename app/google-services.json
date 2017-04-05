@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "366150887492",
+    "project_id": "firebase-challengeapp"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:366150887492:android:adac1cbdc07cc733",
+        "android_client_info": {
+          "package_name": "com.appchallenge"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "366150887492-dkjrm0ctac4ldq5ja4e1oa9lg6nmhonf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.appchallenge",
+            "certificate_hash": "840550b202b01e1db62b643c3be346b7c0a3b0d2"
+          }
+        },
+        {
+          "client_id": "366150887492-0h0jlvopepaokqnt4r8km3k6jn5n440r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBseMyn08ilH4wYPX0DU13AJsK0MSoqjqg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
