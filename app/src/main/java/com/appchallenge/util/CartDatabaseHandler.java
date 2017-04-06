@@ -20,17 +20,21 @@ public class CartDatabaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String TABLE_EVENT = "event";
 
+    private static final String KEY_EVENT_ID = "event_id";
     private static final String KEY_ID = "id";
     private static final String KEY_TITLE = "name";
     private static final String KEY_END_DATE = "phone_number";
     private static final String KEY_IMAGE_URL = "image_url";
     private static final String KEY_EVENT_COUNT = "count";
 
+
     private static final int COLUMN_ID = 0;
     private static final int COLUMN_TITLE = 1;
     private static final int COLUMN_END_DATE = 2;
     private static final int COLUMN_THUMBNAIL_URL = 3;
     private static final int COLUMN_EVENT_COUNT = 4;
+    private static final int COLUMN_EVENT_ID = 5;
+
 
     public CartDatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -39,7 +43,7 @@ public class CartDatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
-        String CREATE_EVENT_TABLE = "CREATE TABLE " + TABLE_EVENT + "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_TITLE + " TEXT," + KEY_END_DATE + " TEXT," + KEY_IMAGE_URL + " TEXT," + KEY_EVENT_COUNT + " TEXT" + ")";
+        String CREATE_EVENT_TABLE = "CREATE TABLE " + TABLE_EVENT + "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_TITLE + " TEXT," + KEY_END_DATE + " TEXT," + KEY_IMAGE_URL + " TEXT," + KEY_EVENT_COUNT + " TEXT," + KEY_EVENT_ID + " TEXT" + ")";
 
         sqLiteDatabase.execSQL(CREATE_EVENT_TABLE);
 
@@ -58,13 +62,28 @@ public class CartDatabaseHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase database = this.getWritableDatabase();
 
+        Cursor cursor = database.rawQuery("SELECT *" + " FROM " + TABLE_EVENT + " WHERE " + KEY_EVENT_ID + " = '" + event.getEventId() + "'", null);
+        cursor.moveToFirst();
+
         ContentValues contentValues = new ContentValues();
+        contentValues.put(KEY_EVENT_ID, event.getEventId());
         contentValues.put(KEY_TITLE, event.getTitle());
         contentValues.put(KEY_END_DATE, event.getEndDate());
         contentValues.put(KEY_IMAGE_URL, event.getThumbnailUrl());
-        contentValues.put(KEY_EVENT_COUNT, event.getEventCount());
 
-        database.insert(TABLE_EVENT, null, contentValues);
+        if (cursor.getCount() > 0) {
+            int count = cursor.getInt(COLUMN_EVENT_COUNT);
+            int newCount = count + 1;
+            contentValues.put(KEY_EVENT_COUNT, newCount);
+
+            database.update(TABLE_EVENT, contentValues, KEY_EVENT_ID + " = ?", new String[]{String.valueOf(event.getEventId())});
+
+        } else {
+
+            contentValues.put(KEY_EVENT_COUNT, event.getEventCount());
+            database.insert(TABLE_EVENT, null, contentValues);
+        }
+
         database.close();
 
     }
@@ -128,7 +147,7 @@ public class CartDatabaseHandler extends SQLiteOpenHelper {
                 event.setTitle(cursor.getString(COLUMN_TITLE));
                 event.setEndDate(cursor.getString(COLUMN_END_DATE));
                 event.setThumbnailUrl(cursor.getString(COLUMN_THUMBNAIL_URL));
-                event.setEventCount(cursor.getString(COLUMN_EVENT_COUNT));
+                event.setEventCount(cursor.getInt(COLUMN_EVENT_COUNT));
 
                 eventArrayList.add(event);
 

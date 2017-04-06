@@ -202,6 +202,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void launchHomeActivity() {
+        hideProgressDialog();
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }

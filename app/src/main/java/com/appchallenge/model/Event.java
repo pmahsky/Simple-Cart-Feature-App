@@ -10,7 +10,8 @@ public class Event {
     private String thumbnailUrl;
     private String endDate;
     private int rowId;
-    private String eventCount;
+    private int eventCount;
+    private String eventId;
 
     public String getThumbnailUrl() {
         return thumbnailUrl;
@@ -45,14 +46,22 @@ public class Event {
         return rowId;
     }
 
-    public String getEventCount() {
+    public int getEventCount() {
 
         return eventCount;
 
     }
 
-    public void setEventCount(String eventCount) {
+    public void setEventCount(int eventCount) {
 
         this.eventCount = eventCount;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
+    public String getEventId() {
+        return eventId;
     }
 }

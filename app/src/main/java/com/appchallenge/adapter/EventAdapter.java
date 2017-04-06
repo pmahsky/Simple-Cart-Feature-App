@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -66,7 +67,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
         holder.mItemImageView.setImageUrl(eventsList.get(position).getThumbnailUrl(), volleyImageLoader);
 
         if (TAG.equalsIgnoreCase(CartActivity.class.getSimpleName()))
-            holder.mCartQuantityTextView.setText(eventsList.get(position).getEventCount());
+            holder.mCartQuantityTextView.setText(String.valueOf(eventsList.get(position).getEventCount()));
 
     }
 
@@ -86,8 +87,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
         private final TextView mTitleTextView;
         private final TextView mEndDateTextView;
         private final ImageView mCartImageView;
-        private final Button mAddToCartButton;
-        private final Button mRemoveFromCartButton;
+        private final ImageButton mAddToCartButton;
+        private final ImageButton mRemoveFromCartButton;
         private final TextView mCartQuantityTextView;
         private final LinearLayout mCartUpdateLayout;
 
@@ -102,9 +103,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
 
             mCartImageView = (ImageView) v.findViewById(R.id.cartImageView);
 
-            mAddToCartButton = (Button) v.findViewById(R.id.addToCartButton);
+            mAddToCartButton = (ImageButton) v.findViewById(R.id.addToCartButton);
 
-            mRemoveFromCartButton = (Button) v.findViewById(R.id.removeFromCartButton);
+            mRemoveFromCartButton = (ImageButton) v.findViewById(R.id.removeFromCartButton);
 
             mCartQuantityTextView = (TextView) v.findViewById(R.id.cartQtyTextView);
 
@@ -119,7 +120,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
                 mCartImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(context, "Cart Clicked = " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Item added to Cart, position = " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
 
                         cartDataBaseHandler.addEvent(eventsList.get(getAdapterPosition()));
                     }
@@ -135,7 +136,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
                 mCartImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(context, "Cart Clicked = " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                         builder.setTitle(R.string.alert_title_text);
@@ -145,12 +145,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
+                                Toast.makeText(context, "Item removed from Cart, position = " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
                                 cartDataBaseHandler.removeEvent(eventsList.get(getAdapterPosition()).getRowId());
                                 eventsList.remove(getAdapterPosition());
                                 notifyDataSetChanged();
 
                                 dialogInterface.dismiss();
-//                                alertDialog.dismiss();
                             }
                         });
 
@@ -158,7 +158,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.dismiss();
-//                                alertDialog.dismiss();
                             }
                         });
 
@@ -187,7 +186,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
                 @Override
                 public void onClick(View view) {
 
-                    if (eventsList.get(getAdapterPosition()).getEventCount().equals("1")) {
+                    if (eventsList.get(getAdapterPosition()).getEventCount() == 1) {
                         return;
                     }
                     cartDataBaseHandler.removeEventFromCart(eventsList.get(getAdapterPosition()));

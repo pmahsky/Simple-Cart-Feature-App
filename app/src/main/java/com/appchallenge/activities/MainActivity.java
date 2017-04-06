@@ -4,9 +4,11 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressDialog mProgressDialog;
     private static final String url = "https://guidebook.com/service/v2/upcomingGuides/";
     private RecyclerView mRecyclerView;
+    private boolean doubleBackToExitPressedOnce;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
@@ -128,7 +132,8 @@ public class MainActivity extends AppCompatActivity {
                                 event.setTitle(eventObject.getString("name"));
                                 event.setEndDate(eventObject.getString("endDate"));
                                 event.setThumbnailUrl(eventObject.getString("icon"));
-                                event.setEventCount("1");
+                                event.setEventCount(1);
+                                event.setEventId(eventObject.getString("url"));
 
                                 eventList.add(event);
                             }
@@ -162,7 +167,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        hideProgressDialog();
+        super.onPause();
+
+    }
+
+    @Override
     protected void onStop() {
+        hideProgressDialog();
         super.onStop();
 
         if (mRequestQueue != null)
@@ -171,8 +184,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         hideProgressDialog();
+        super.onDestroy();
+
     }
 
     private void showProgressDialog() {
@@ -192,5 +206,27 @@ public class MainActivity extends AppCompatActivity {
             mProgressDialog.hide();
             mProgressDialog = null;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+
+        } else {
+            doubleBackToExitPressedOnce = true;
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce = false;
+                }
+            }, 2000);
+
+            Snackbar.make(findViewById(R.id.coordinatorLayout), getString(R.string.please_click_again_for_back), Snackbar.LENGTH_SHORT).show();
+        }
+
+
     }
 }
